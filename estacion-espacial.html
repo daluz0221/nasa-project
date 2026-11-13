@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estación espacial con gravedad artificial: tres escenarios de la Tierra a Marte</title>
+<meta name="description" content="Escenario teórico por fases: una estación con gravedad por rotación y dos puertos, base lunar, base intermedia y Marte autosustentable. Tres propuestas comparadas.">
+<style>
+:root{
+  --tinta:#10140f;--texto:#f3efe4;--texto2:#c8c2b4;--regla:#2a3128;
+  --ambar:#e0a45c;--luna:#d7e2dc;--marte:#c4643a;--inter:#8aa88b;
+  --serif:"Palatino Linotype",Palatino,"Iowan Old Style",Georgia,serif;
+  --sans:"Segoe UI",system-ui,sans-serif;
+  --panel:#171c15;
+}
+*{box-sizing:border-box}
+html{font-size:17px;scroll-padding-top:4.5rem}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{margin:0;background:var(--tinta);color:var(--texto);font-family:var(--sans);font-size:1rem;line-height:1.6;overflow-wrap:break-word}
+a{color:var(--texto);text-decoration:underline;text-underline-offset:3px}
+a:hover{color:var(--ambar)}
+:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:700;letter-spacing:-.015em;line-height:1.12;margin:0 0 .6em}
+h1{font-size:clamp(2.3rem,7vw,4.6rem);letter-spacing:-.03em;max-width:15em}
+h2{font-size:clamp(1.8rem,4.2vw,2.7rem)}
+h3{font-size:1.4rem}
+h4{font-size:1.1rem;color:var(--ambar)}
+p{margin:0 0 1em}
+.lectura{max-width:70ch}
+.sec{padding:4.5rem 1.25rem;border-top:1px solid var(--regla)}
+.in{max-width:1120px;margin:0 auto}
+.sobre{font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;color:var(--texto2);margin:0 0 1rem}
+.sec>.in>.lectura.intro{color:var(--texto2)}
+
+/* menú */
+.top{position:fixed;inset:0 0 auto 0;z-index:50;background:var(--tinta);border-bottom:1px solid var(--regla)}
+.top .in{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.55rem 1.25rem;flex-wrap:wrap}
+.marca{font-family:var(--serif);font-weight:700;color:var(--texto);text-decoration:none;letter-spacing:-.01em}
+.top ul{list-style:none;margin:0;padding:0;display:flex;gap:1.1rem;flex-wrap:wrap}
+.top ul a{text-decoration:none;font-size:.95rem;padding:.25rem 0;border-bottom:1px solid transparent}
+.top ul a:hover,.top ul a.act{border-bottom-color:var(--ambar);color:var(--texto)}
+#btn-menu{display:none;background:none;color:var(--texto);border:1px solid var(--texto2);padding:.4rem .8rem;font:inherit;cursor:pointer}
+@media (max-width:820px){
+  #btn-menu{display:inline-block}
+  .top nav{width:100%}
+  .top ul{display:none;flex-direction:column;gap:0;padding:.5rem 0}
+  .top ul.abierto{display:flex}
+  .top ul a{display:block;padding:.65rem 0;border-bottom:1px solid var(--regla)}
+}
+
+/* portada */
+.portada{padding:8rem 1.25rem 4.5rem;border-top:0}
+.portada .lead{font-size:1.2rem;max-width:44ch;color:var(--texto2)}
+.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0;margin:2.5rem 0;border-top:1px solid var(--regla)}
+.datos div{padding:1.1rem 1.25rem 1.1rem 0;border-bottom:1px solid var(--regla)}
+.datos b{display:block;font-family:var(--serif);font-size:1.5rem;color:var(--ambar);line-height:1.2}
+.datos span{color:var(--texto2)}
+.btns{display:flex;flex-wrap:wrap;gap:.8rem}
+.btn{display:inline-block;font:inherit;font-weight:600;color:var(--texto);background:transparent;border:2px solid var(--ambar);padding:.65rem 1.2rem;text-decoration:none;cursor:pointer}
+.btn:hover{background:var(--ambar);color:var(--tinta)}
+.btn.sec2{border-color:var(--texto2)}
+.btn.sec2:hover{background:var(--texto2)}
+
+/* capas */
+.cap{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.05rem .45rem;margin-right:.35rem;border:1px solid;vertical-align:.12em;white-space:nowrap}
+.cap.fis{color:var(--luna);border-color:var(--luna)}
+.cap.cri{color:var(--ambar);border-color:var(--ambar)}
+.cap.esc{color:var(--inter);border-color:var(--inter)}
+.cap.om{color:var(--texto2);border-color:var(--texto2)}
+.leyenda{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;margin:0 0 1.5rem;padding:0;list-style:none;color:var(--texto2)}
+
+/* cadena */
+.diagrama{width:100%;height:auto;display:block;margin:2rem 0 1rem}
+.diagrama .lin{stroke:var(--regla);stroke-width:2}
+.diagrama .tr{stroke:var(--texto2);stroke-width:1.5;stroke-dasharray:5 5;fill:none}
+.nodo{cursor:pointer}
+.nodo circle{fill:var(--tinta);stroke-width:3}
+.nodo text{fill:var(--texto);font-family:var(--sans)}
+.nodo .t{font-family:var(--serif);font-size:20px;font-weight:700}
+.nodo .s{font-size:13.5px;fill:var(--texto2)}
+.nodo:hover circle,.nodo:focus-visible circle{fill:var(--panel);stroke-width:5}
+.nodo:focus-visible{outline:none}
+.nodo:focus-visible .t{text-decoration:underline}
+.n-t circle{stroke:var(--texto)}.n-e circle{stroke:var(--ambar)}.n-l circle{stroke:var(--luna)}.n-i circle{stroke:var(--inter)}.n-m circle{stroke:var(--marte)}
+.estado-diag{color:var(--texto2);margin:0 0 2rem}
+.tiempo{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;list-style:none;padding:0;margin:0 0 2.5rem;border-top:1px solid var(--regla)}
+.tiempo li{padding:1rem 1.25rem 1rem 0;border-bottom:1px solid var(--regla)}
+.tiempo b{font-family:var(--serif);font-size:1.15rem;display:block}
+.dv{border-top:1px solid var(--regla);padding-top:1.5rem}
+.dv dl{display:grid;grid-template-columns:minmax(0,1fr);gap:.25rem 1.5rem;margin:0;max-width:760px}
+.dv dt{color:var(--texto)}
+.dv dd{margin:0 0 .6rem;color:var(--texto2)}
+@media (min-width:640px){.dv dl{grid-template-columns:minmax(0,18rem) 1fr}.dv dd{margin:0 0 .5rem}}
+
+/* método */
+.fases{list-style:none;margin:2rem 0 0;padding:0}
+.fase{border-top:1px solid var(--regla);display:grid;grid-template-columns:1fr;position:relative}
+.fase:last-child{border-bottom:1px solid var(--regla)}
+@media (min-width:860px){
+  .fase{grid-template-columns:96px 1fr}
+  .fase::before{content:"";position:absolute;left:36px;top:0;bottom:0;width:1px;background:var(--regla)}
+}
+.fnum{font-family:var(--serif);font-size:2.8rem;line-height:1;color:var(--ambar);padding:1.1rem 0 0;font-weight:400;letter-spacing:-.04em}
+@media (min-width:860px){.fnum{font-size:3.4rem;background:var(--tinta);width:72px;align-self:start;position:relative;z-index:1;margin-top:.6rem;padding:.2rem 0}}
+.fase button.fh{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;gap:1rem;width:100%;cursor:pointer;padding:1.1rem 0 1.1rem;font-family:var(--serif);font-size:1.45rem;font-weight:700;letter-spacing:-.015em}
+.fase button.fh:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+.fase button.fh .ind{border:1px solid var(--texto2);padding:.1rem .6rem;font-family:var(--sans);font-size:.9rem;font-weight:600;white-space:nowrap}
+.fpanel{padding:0 0 1.5rem}
+.fpanel dl{display:grid;gap:.15rem 1.5rem;margin:0;grid-template-columns:minmax(0,1fr)}
+.fpanel dt{font-weight:700;color:var(--ambar);font-size:.92rem;letter-spacing:.04em;text-transform:uppercase;margin-top:.7rem}
+.fpanel dd{margin:0;max-width:70ch}
+@media (min-width:700px){.fpanel dl{grid-template-columns:9.5rem 1fr}.fpanel dt{margin-top:0;padding-top:.15rem}.fpanel dd{margin-bottom:.75rem}}
+.fpanel[hidden]{display:none}
+
+/* propuestas */
+.tabs{display:flex;flex-wrap:wrap;gap:.6rem;margin:2rem 0 0;border-bottom:1px solid var(--regla)}
+.tabs [role=tab]{font:inherit;font-weight:600;background:transparent;color:var(--texto);border:2px solid var(--texto2);border-bottom:0;padding:.6rem 1.1rem;cursor:pointer;border-top-width:4px}
+.tabs [role=tab][aria-selected=true]{background:var(--panel);border-color:var(--texto)}
+.tabs [data-p=a]{border-top-color:var(--ambar)}
+.tabs [data-p=b]{border-top-color:var(--inter)}
+.tabs [data-p=c]{border-top-color:var(--marte)}
+.tpanel{border-left:4px solid var(--ambar);padding:2rem 0 1rem 1.5rem;margin:0}
+#propuesta-b.tpanel{border-left-color:var(--inter)}
+#propuesta-c.tpanel{border-left-color:var(--marte)}
+.tpanel[hidden]{display:none}
+@media (max-width:560px){.tpanel{padding-left:1rem}}
+.ficha{display:grid;grid-template-columns:minmax(0,1fr);gap:0;margin:1.5rem 0 2rem;border-top:1px solid var(--regla)}
+.ficha div{padding:.7rem 0;border-bottom:1px solid var(--regla)}
+.ficha dt{font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--texto2)}
+.ficha dd{margin:.1rem 0 0}
+@media (min-width:760px){.ficha{grid-template-columns:1fr 1fr;column-gap:2.5rem}}
+.ficha .ancho{grid-column:1/-1}
+.aplica{margin:0 0 2rem;padding-left:0;list-style:none;counter-reset:ap;max-width:80ch}
+.aplica li{counter-increment:ap;padding:.45rem 0 .45rem 3rem;position:relative;border-bottom:1px solid var(--regla)}
+.aplica li::before{content:counter(ap);position:absolute;left:0;top:.2rem;font-family:var(--serif);font-size:1.6rem;color:var(--ambar)}
+.aplica b{color:var(--texto)}
+.tension{border-left:2px solid var(--marte);padding:.2rem 0 .2rem 1rem;margin:0 0 1.2rem;max-width:70ch}
+.motivo{border-left:2px solid var(--inter);padding:.2rem 0 .2rem 1rem;max-width:70ch}
+
+/* tabla */
+.region{overflow-x:auto;border:1px solid var(--regla);margin-top:1.5rem;max-width:100%}
+.region:focus-visible{outline:3px solid var(--ambar)}
+table{border-collapse:collapse;min-width:900px;width:100%;font-size:.95rem}
+caption{text-align:left;padding:.9rem 1rem;color:var(--texto2);caption-side:top}
+th,td{padding:.7rem 1rem;vertical-align:top;border-bottom:1px solid var(--regla);text-align:left}
+thead th{font-family:var(--serif);font-size:1.1rem;border-bottom:2px solid var(--regla)}
+thead th[data-p=a]{border-top:4px solid var(--ambar)}
+thead th[data-p=b]{border-top:4px solid var(--inter)}
+thead th[data-p=c]{border-top:4px solid var(--marte)}
+tbody th{position:sticky;left:0;background:var(--tinta);min-width:9.5rem;font-weight:700;z-index:1;border-right:1px solid var(--regla)}
+thead th:first-child{position:sticky;left:0;background:var(--tinta);z-index:2}
+
+/* explorador */
+.explorador{display:grid;grid-template-columns:minmax(0,1fr);gap:2rem;margin-top:2rem}
+@media (min-width:860px){.explorador{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.campos{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:420px){.campos{grid-template-columns:1fr}}
+label{display:block;font-weight:600;margin-bottom:.3rem}
+input[type=number]{width:100%;font:inherit;color:var(--texto);background:var(--panel);border:2px solid var(--texto2);padding:.55rem .7rem}
+.carga{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem}
+.formula{font-family:Consolas,"Cascadia Mono",monospace;background:var(--panel);border-left:3px solid var(--luna);padding:.9rem 1rem;margin:1rem 0;font-size:.95rem;overflow-x:auto}
+.salida{background:var(--panel);border-top:1px solid var(--regla);border-bottom:1px solid var(--regla);padding:1.2rem 1rem;min-height:11rem}
+.salida .gran{font-family:var(--serif);font-size:2.6rem;line-height:1.1;color:var(--ambar);margin:0}
+.salida .aviso{color:#f0b890}
+
+/* almacén */
+.rec{display:grid;grid-template-columns:minmax(0,1fr);gap:0;margin-top:2rem}
+.rec section{padding:1.5rem 0;border-top:1px solid var(--regla)}
+.rec h3{margin-bottom:.4rem}
+.rec dl{margin:.8rem 0 0;display:grid;grid-template-columns:minmax(0,1fr);gap:.2rem 1.5rem}
+.rec dt{font-weight:700}
+.rec dt.e{color:var(--ambar)}.rec dt.l{color:var(--luna)}.rec dt.i{color:var(--inter)}.rec dt.m{color:var(--marte)}
+.rec dd{margin:0 0 .6rem;color:var(--texto2)}
+@media (min-width:760px){.rec dl{grid-template-columns:9rem 1fr}.rec dd{margin:0 0 .45rem}}
+
+ul.lim{max-width:70ch;padding-left:1.2rem}
+ul.lim li{margin-bottom:.8rem}
+.cierre p{font-family:var(--serif);font-size:clamp(1.25rem,2.6vw,1.6rem);line-height:1.4;max-width:34em}
+footer{padding:2rem 1.25rem 3rem;border-top:1px solid var(--regla);color:var(--texto2)}
+
+@media print{
+  :root{--tinta:#fff;--texto:#111;--texto2:#333;--regla:#bbb;--panel:#f4f4f4;--ambar:#7a4b0a;--luna:#2f4a40;--marte:#8a3414;--inter:#3c5a3e}
+  html{font-size:12pt}
+  body{background:#fff;color:#111}
+  .top,.btns,.carga,#btn-menu,.tabs{display:none}
+  .portada{padding-top:1rem}
+  .sec{padding:1.5rem 0;break-inside:auto}
+  .fpanel[hidden],.tpanel[hidden]{display:block !important}
+  .fh .ind{display:none}
+  .region{overflow:visible}
+  table{min-width:0;font-size:9pt}
+  a{color:#111}
+  .tpanel{break-before:page}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="in">
+    <a class="marca" href="#portada">Estación, Luna, Marte</a>
+    <button id="btn-menu" type="button" aria-expanded="false" aria-controls="menu">Menú</button>
+    <nav aria-label="Secciones de la página">
+      <ul id="menu">
+        <li><a href="#portada">Portada</a></li>
+        <li><a href="#cadena">Cadena</a></li>
+        <li><a href="#metodo">Método</a></li>
+        <li><a href="#propuestas">Propuestas</a></li>
+        <li><a href="#comparacion">Comparación</a></li>
+        <li><a href="#gravedad">Gravedad</a></li>
+        <li><a href="#almacen">Almacén</a></li>
+        <li><a href="#limites">Límites</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="sec portada" id="portada" aria-labelledby="t-portada">
+  <div class="in">
+    <p class="sobre">Informe de escenario · divulgación técnica</p>
+    <h1 id="t-portada">Una estación que gira, una Luna que aprende, un camino con almacén y un Marte que puede quedarse</h1>
+    <p class="lead">Este es un escenario teórico, no un programa ni un presupuesto: ordena las decisiones de una cadena Tierra–Luna–Marte y compara tres maneras distintas de construirla.</p>
+    <div class="datos">
+      <div><b>Gravedad por rotación</b><span>Un hábitat que gira produce una aceleración que se calcula con una fórmula, no con una promesa.</span></div>
+      <div><b>Dos naves a la vez</b><span>Dos puertos en un nodo que no gira, con esclusas y zonas de carga separadas.</span></div>
+      <div><b>Tierra–Luna–intermedia–Marte</b><span>Cinco nodos y una base intermedia que sostiene la logística cuando la geometría es mala.</span></div>
+    </div>
+    <div class="btns">
+      <a class="btn" href="#propuestas">Ver las tres propuestas</a>
+      <a class="btn sec2" href="#metodo">Ver el paso a paso</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="cadena" aria-labelledby="t-cadena">
+  <div class="in">
+    <p class="sobre">Visión de conjunto</p>
+    <h2 id="t-cadena">La cadena de cinco nodos</h2>
+    <p class="lectura intro">Cada nodo del diagrama lleva a la fase del método que lo explica. El diagrama cambia sus etiquetas según la propuesta que tengas elegida.</p>
+    <ul class="leyenda" aria-label="Capas de afirmación">
+      <li><span class="cap fis">Física</span> relación comprobada</li>
+      <li><span class="cap cri">Criterio</span> pauta de ingeniería, no ley</li>
+      <li><span class="cap esc">Escenario</span> hipótesis de trabajo</li>
+    </ul>
+
+    <svg class="diagrama" viewBox="0 0 1000 250" role="group" aria-label="Diagrama de la cadena logística: Tierra, estación, Luna, base intermedia y Marte">
+      <line class="lin" x1="90" y1="95" x2="910" y2="95"/>
+      <path class="tr" d="M90 95 C 200 40, 290 40, 295 95"/>
+      <path class="tr" d="M295 95 C 400 40, 490 40, 500 95"/>
+      <path class="tr" d="M500 95 C 600 40, 690 40, 705 95"/>
+      <path class="tr" d="M705 95 C 800 40, 890 40, 910 95"/>
+      <a class="nodo n-t" href="#fase-1" aria-label="Tierra: ir al marco del método">
+        <circle cx="90" cy="95" r="30"/>
+        <text class="t" x="90" y="155" text-anchor="middle">Tierra</text>
+        <text class="s" id="d-t" x="90" y="178" text-anchor="middle">Origen de la carga</text>
+      </a>
+      <a class="nodo n-e" href="#fase-2" aria-label="Estación: ir a órbita y forma">
+        <circle cx="295" cy="95" r="30"/>
+        <circle cx="295" cy="95" r="14" style="stroke:var(--ambar);stroke-width:2;fill:none"/>
+        <text class="t" x="295" y="155" text-anchor="middle">Estación</text>
+        <text class="s" id="d-e" x="295" y="178" text-anchor="middle">Toro en LEO</text>
+      </a>
+      <a class="nodo n-l" href="#fase-9" aria-label="Luna: ir a base lunar sustentable">
+        <circle cx="500" cy="95" r="30"/>
+        <text class="t" x="500" y="155" text-anchor="middle">Luna</text>
+        <text class="s" id="d-l" x="500" y="178" text-anchor="middle">Polo sur</text>
+      </a>
+      <a class="nodo n-i" href="#fase-10" aria-label="Base intermedia: ir a la fase de base intermedia">
+        <circle cx="705" cy="95" r="30"/>
+        <text class="t" x="705" y="155" text-anchor="middle">Intermedia</text>
+        <text class="s" id="d-i" x="705" y="178" text-anchor="middle">Depósito en L2</text>
+      </a>
+      <a class="nodo n-m" href="#fase-11" aria-label="Marte: ir a Marte autosustentable">
+        <circle cx="910" cy="95" r="30"/>
+        <text class="t" x="910" y="155" text-anchor="middle">Marte</text>
+        <text class="s" id="d-m" x="910" y="178" text-anchor="middle">Arcadia Planitia</text>
+      </a>
+    </svg>
+    <p class="estado-diag" id="estado-diag" aria-live="polite">Etiquetas según la propuesta A.</p>
+
+    <ol class="tiempo" aria-label="Línea de tiempo">
+      <li><b>1 · Acumular en órbita</b>La estación recibe carga y la guarda antes de que exista nada más.</li>
+      <li><b>2 · Aprender en la Luna</b>Una base cercana enseña a vivir con recursos locales.</li>
+      <li><b>3 · Cachear en el camino</b>Un almacén a mitad de trayecto guarda lo que no puede esperar.</li>
+      <li><b>4 · Permanecer en Marte</b>El último paso es poder quedarse aunque falle una ventana.</li>
+    </ol>
+
+    <div class="dv">
+      <h3>Escalones de velocidad (delta-v)</h3>
+      <p class="lectura">El <em>delta-v</em> es la variación de velocidad que una nave debe poder darse para cambiar de órbita; resume cuánto cuesta cada tramo. <span class="cap om">Orden de magnitud</span>Son valores de literatura pública, no un plan de vuelo.</p>
+      <dl>
+        <dt>Superficie terrestre a LEO</dt><dd>unos 9,4 km/s con pérdidas <span class="cap om">orden de magnitud</span></dd>
+        <dt>LEO a transferencia lunar</dt><dd>unos 3,1–3,2 km/s <span class="cap om">orden de magnitud</span></dd>
+        <dt>Órbita lunar baja a superficie</dt><dd>unos 1,7–2 km/s <span class="cap om">orden de magnitud</span></dd>
+        <dt>LEO a transferencia de Hohmann hacia Marte</dt><dd>unos 3,6–4 km/s <span class="cap om">orden de magnitud</span></dd>
+        <dt>Captura y descenso en Marte</dt><dd>depende mucho del aerofrenado (frenar con la atmósfera); no se resume en un solo número honesto.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="metodo" aria-labelledby="t-metodo">
+  <div class="in">
+    <p class="sobre">Método común</p>
+    <h2 id="t-metodo">Once fases, explicadas una sola vez</h2>
+    <p class="lectura intro">Las tres propuestas reutilizan estas fases. Aquí se explica el método; en cada propuesta solo se dice qué cambia. La primera fase aparece abierta y cada fase se abre y se cierra sin perder su texto.</p>
+    <p class="lectura"><span class="cap cri">Criterio</span> Un sistema de soporte vital (<em>ECLSS</em>, por sus siglas en inglés) es el conjunto de equipos que reciclan aire y agua y gestionan residuos. <em>ISRU</em> significa usar recursos del lugar, como hielo o regolito, en vez de traerlo de la Tierra. Ambos se tratan por capas y son un estado tardío, no el del primer año.</p>
+    <ol class="fases" id="fases"></ol>
+  </div>
+</section>
+
+<section class="sec" id="propuestas" aria-labelledby="t-prop">
+  <div class="in">
+    <p class="sobre">Tres escenarios que compiten</p>
+    <h2 id="t-prop">Tres propuestas para toda la cadena</h2>
+    <p class="lectura intro"><span class="cap esc">Escenario</span> Órbitas, sitios, masas y décadas son hipótesis de trabajo. Las tres cambian órbita, forma del hábitat, gravedad, energía, sitio lunar, base intermedia y sitio marciano. No hay una ganadora.</p>
+
+    <div class="tabs" role="tablist" aria-label="Propuestas">
+      <button role="tab" id="tab-a" data-p="a" aria-selected="true" aria-controls="propuesta-a" tabindex="0">A · Puerto cercano</button>
+      <button role="tab" id="tab-b" data-p="b" aria-selected="false" aria-controls="propuesta-b" tabindex="-1">B · Ciudad estable y ciclador</button>
+      <button role="tab" id="tab-c" data-p="c" aria-selected="false" aria-controls="propuesta-c" tabindex="-1">C · Corredor de depósitos</button>
+    </div>
+
+    <!-- A -->
+    <div role="tabpanel" class="tpanel" id="propuesta-a" aria-labelledby="tab-a">
+      <h3>Propuesta A — Puerto cercano</h3>
+      <p class="lectura">Pensada para construir y reabastecer pronto, aceptando arrastre atmosférico y muchas lanzaderas. Un toro rígido a unos 450 km de altura gira para dar cerca de 1 g; en su centro, un hub que no gira recibe dos naves. La Luna aporta hielo del polo sur y la intermedia es un pequeño depósito en el punto Tierra-Luna L2.</p>
+      <dl class="ficha">
+        <div><dt>Órbita</dt><dd><span class="cap esc">Escenario</span> LEO, cerca de 450 km. En LEO hay eclipses frecuentes (cada órbita).</dd></div>
+        <div><dt>Hábitat</dt><dd><span class="cap esc">Escenario</span> Toro rígido (rueda de von Braun / toro de Stanford) con hub central <em>despun</em>, es decir, un nodo desacoplado del giro.</dd></div>
+        <div><dt>Radio y rpm</dt><dd><span class="cap fis">Física</span> R = 224 m a 2,0 rpm <span class="cap cri">Criterio</span> dentro de la pauta de ≤2 rpm.</dd></div>
+        <div><dt>g calculado</dt><dd><span class="cap fis">Física</span> <strong class="gcalc" data-r="224" data-rpm="2.0">1,00 g</strong> con a = ω²·R.</dd></div>
+        <div><dt>Puertos</dt><dd>Dos en el hub, que no gira: carguero y nave tripulada, o dos cargueros. Esclusa de tripulación y esclusa de carga separadas.</dd></div>
+        <div><dt>Energía</dt><dd>Solar en el hub y en paneles que no giran con el anillo, más almacenamiento para la sombra orbital.</dd></div>
+        <div><dt>Almacén</dt><dd>Alimentos, propergol criogénico, kits de construcción y equipos en módulos de depósito junto al hub, fuera de la zona que gira.</dd></div>
+        <div><dt>Luna</dt><dd><span class="cap esc">Escenario</span> Polo sur, cráteres con hielo detectado (Shackleton como ejemplo). El hielo da agua, oxígeno y, con carbono traído o capturado, metano.</dd></div>
+        <div><dt>Intermedia</dt><dd><span class="cap esc">Escenario</span> Depósito y refugio pequeño en Tierra-Luna L2, del lado lejano de la Luna. Puerta de salida a Marte y almacén de propergol lunar. No es una segunda ciudad.</dd></div>
+        <div><dt>Marte</dt><dd><span class="cap esc">Escenario</span> Llanura del hemisferio norte con acceso a hielo (Arcadia Planitia como ejemplo); metano y oxígeno a partir de CO₂ atmosférico y agua local.</dd></div>
+      </dl>
+      <h4>Cómo se aplica el método</h4>
+      <ol class="aplica" data-apply="a"></ol>
+      <div class="tension"><strong>Tensión honesta.</strong> Cada reboost (volver a subir la órbita) cuesta propergol; la basura orbital importa; la ventana a Marte no mejora solo por estar en LEO. La ventaja es el acceso desde la Tierra.</div>
+      <div class="motivo"><strong>Por qué elegirla.</strong> Si lo prioritario es empezar pronto y reabastecer con frecuencia desde la Tierra.</div>
+    </div>
+
+    <!-- B -->
+    <div role="tabpanel" class="tpanel" id="propuesta-b" aria-labelledby="tab-b" hidden>
+      <h3>Propuesta B — Ciudad estable y ciclador</h3>
+      <p class="lectura">Pensada para agricultura de verdad y para un transporte Tierra-Marte que se repite, a cambio de una obra mucho mayor. Un cilindro corto, tipo cilindro de O'Neill, ocupa el punto Tierra-Luna L5. Un ciclador de Aldrin —un hábitat que viaja sin parar en una trayectoria repetida entre el sistema Tierra-Luna y Marte— hace de base intermedia.</p>
+      <dl class="ficha">
+        <div><dt>Órbita</dt><dd><span class="cap esc">Escenario</span> Punto Tierra-Luna L5 (punto de Lagrange: posición donde las gravedades y la rotación se equilibran), dinámicamente más tranquilo que LEO baja.</dd></div>
+        <div><dt>Hábitat</dt><dd><span class="cap esc">Escenario</span> Cilindro corto tipo O'Neill. El interior es suelo, invernadero y barrio; las tapas son industria y muelles.</dd></div>
+        <div><dt>Radio y rpm</dt><dd><span class="cap fis">Física</span> R = 895 m a 1,0 rpm <span class="cap cri">Criterio</span> bien por debajo de las 2 rpm.</dd></div>
+        <div><dt>g calculado</dt><dd><span class="cap fis">Física</span> <strong class="gcalc" data-r="895" data-rpm="1.0">1,00 g</strong> con a = ω²·R.</dd></div>
+        <div><dt>Puertos</dt><dd>Dos en los ejes de las tapas, en microgravedad; pueden recibir naves a la vez. El giro no llega al mecanismo de atraque.</dd></div>
+        <div><dt>Energía</dt><dd>Grandes campos solares fuera del cilindro. En L5 no hay el eclipse de 90 minutos de LEO, ventaja real, pero no luz eterna: la orientación y el mantenimiento siguen existiendo.</dd></div>
+        <div><dt>Almacén</dt><dd>La propia ciudad guarda cosechas, agua, equipos y propergol traído de la Luna. La comida de las misiones largas sale de aquí.</dd></div>
+        <div><dt>Luna</dt><dd><span class="cap esc">Escenario</span> Base industrial en un tubo de lava (colinas Marius como ejemplo): protege de radiación y extremos térmicos. Exporta oxígeno, metales y áridos a L5.</dd></div>
+        <div><dt>Intermedia</dt><dd><span class="cap esc">Escenario</span> Ciclador de Aldrin más taxis que suben y bajan en cada encuentro. El encuentro dura poco: quien pierde la ventana del taxi espera a la siguiente vuelta, del orden de un par de años, no de una semana.</dd></div>
+        <div><dt>Marte</dt><dd><span class="cap esc">Escenario</span> Sistema de Valles Marineris, con invernaderos presurizados, fisión nuclear como respaldo del sol (el polvo global existe) y propergol local.</dd></div>
+      </dl>
+      <h4>Cómo se aplica el método</h4>
+      <ol class="aplica" data-apply="b"></ol>
+      <div class="tension"><strong>Tensión honesta.</strong> La masa a ensamblar es enorme; el ciclador no se «aparca» junto a Marte; hace falta una industria lunar ya en marcha antes de que el ciclador merezca la pena.</div>
+      <div class="motivo"><strong>Por qué elegirla.</strong> Si el objetivo es una agricultura a escala y un transporte repetible, y se acepta una obra mucho mayor y más tardía.</div>
+    </div>
+
+    <!-- C -->
+    <div role="tabpanel" class="tpanel" id="propuesta-c" aria-labelledby="tab-c" hidden>
+      <h3>Propuesta C — Corredor de depósitos</h3>
+      <p class="lectura">Pensada para mover carga con poca masa estructural y dejar caches entre la Tierra y Marte, a cambio de viajes más lentos y de una gravedad menor en el primer hábitat. Dos hábitats unidos por un cable (<em>tether</em>) giran alrededor de su centro de masa; la intermedia es un depósito heliocéntrico que ni orbita la Luna ni Marte.</p>
+      <dl class="ficha">
+        <div><dt>Órbita</dt><dd><span class="cap esc">Escenario</span> Órbita terrestre alta, por encima de la basura densa de LEO y con menos arrastre.</dd></div>
+        <div><dt>Hábitat</dt><dd><span class="cap esc">Escenario</span> Dos hábitats unidos por cable (tether), girando; hub en el centro de masa, con los dos puertos.</dd></div>
+        <div><dt>Radio y rpm</dt><dd><span class="cap fis">Física</span> R = 340 m a 1,0 rpm, o sea unos 680 m de cable entre hábitats <span class="cap cri">Criterio</span> bajo la pauta de ≤2 rpm.</dd></div>
+        <div><dt>g calculado</dt><dd><span class="cap fis">Física</span> <strong class="gcalc" data-r="340" data-rpm="1.0">0,38 g</strong> con a = ω²·R, parecida a la de Marte.</dd></div>
+        <div><dt>Puertos</dt><dd>Dos en el hub del centro de masa, sin giro útil para la tripulación. Cada uno recibe una nave o un contenedor del corredor.</dd></div>
+        <div><dt>Energía</dt><dd>Solar en el hub y, para las naves de carga, propulsión eléctrica solar de bajo empuje.</dd></div>
+        <div><dt>Almacén</dt><dd>El hub es un puerto de contenedores. Alimentos, combustible, materiales y equipos viajan en contenedores estándar del escenario, intercambiables entre estación, Luna, depósito y Marte.</dd></div>
+        <div><dt>Luna</dt><dd><span class="cap esc">Escenario</span> Polo sur, como en A por el hielo, pero aquí es sobre todo mina y fábrica: oxígeno como propergol y masa de reacción, metales y piezas sinterizadas.</dd></div>
+        <div><dt>Intermedia</dt><dd><span class="cap esc">Escenario</span> Depósito en órbita heliocéntrica, cerca de 1,3 UA (unidad astronómica: distancia media Tierra-Sol). Lo reponen cargueros eléctricos lentos.</dd></div>
+        <div><dt>Marte</dt><dd><span class="cap esc">Escenario</span> Cerca del casquete norte, con el hielo como recurso dominante, reactores y huertos. Fobos solo como puerto natural opcional de bajada.</dd></div>
+      </dl>
+      <p class="lectura"><span class="cap cri">Criterio</span> ¿Por qué 0,38 g y no 1 g? Menos cable y menos masa para la misma rpm, y aclimatación de cuerpo y cultivos al régimen que luego tendrán en Marte. Pero 0,38 g no sustituye la evidencia médica que aún no existe sobre años enteros en esa gravedad: es una hipótesis de diseño.</p>
+      <h4>Cómo se aplica el método</h4>
+      <ol class="aplica" data-apply="c"></ol>
+      <div class="tension"><strong>Tensión honesta.</strong> El cable tiene modos de vibración y riesgo de corte; la propulsión eléctrica alarga los viajes de carga a meses; 0,38 g es una apuesta fisiológica.</div>
+      <div class="motivo"><strong>Por qué elegirla.</strong> Si se prefiere poca masa estructural, mucha Luna fabricando y aclimatarse ya a la gravedad del destino, aceptando viajes de carga lentos.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="comparacion" aria-labelledby="t-comp">
+  <div class="in">
+    <p class="sobre">Lado a lado</p>
+    <h2 id="t-comp">Comparación de las tres propuestas</h2>
+    <p class="lectura intro">Todas las filas son <span class="cap esc">escenario</span> salvo el g, que sale de la fórmula. En pantallas estrechas la tabla se desplaza dentro de su región y la primera columna queda fija.</p>
+    <div class="region" role="region" aria-label="Tabla comparativa, desplazable horizontalmente" tabindex="0">
+      <table>
+        <caption>Alcance: estación terrestre, dos puertos, almacén, Luna, base intermedia y Marte, en cada propuesta.</caption>
+        <thead><tr><th scope="col">Rasgo</th><th scope="col" data-p="a">A · Puerto cercano</th><th scope="col" data-p="b">B · Ciudad y ciclador</th><th scope="col" data-p="c">C · Corredor de depósitos</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Órbita de la estación</th><td>LEO, cerca de 450 km</td><td>Tierra-Luna L5</td><td>Órbita terrestre alta, sobre la basura densa de LEO</td></tr>
+          <tr><th scope="row">Tipo de hábitat</th><td>Toro rígido con hub</td><td>Cilindro corto tipo O'Neill</td><td>Dos hábitats unidos por cable (tether)</td></tr>
+          <tr><th scope="row">Gravedad y par radio/rpm</th><td><span class="gcalc" data-r="224" data-rpm="2.0" data-par="1">224 m a 2,0 rpm · 1,00 g</span></td><td><span class="gcalc" data-r="895" data-rpm="1.0" data-par="1">895 m a 1,0 rpm · 1,00 g</span></td><td><span class="gcalc" data-r="340" data-rpm="1.0" data-par="1">340 m a 1,0 rpm · 0,38 g</span></td></tr>
+          <tr><th scope="row">Energía</th><td>Solar con almacenamiento para eclipses frecuentes</td><td>Grandes campos solares; sin el eclipse de 90 minutos de LEO</td><td>Solar en el hub y propulsión eléctrica solar para la carga</td></tr>
+          <tr><th scope="row">Sitio lunar</th><td>Polo sur, hielo (Shackleton)</td><td>Tubo de lava (colinas Marius)</td><td>Polo sur como mina y fábrica</td></tr>
+          <tr><th scope="row">Base intermedia</th><td>Depósito y refugio en Tierra-Luna L2</td><td>Ciclador de Aldrin con taxis</td><td>Depósito heliocéntrico a unas 1,3 UA</td></tr>
+          <tr><th scope="row">Sitio marciano</th><td>Arcadia Planitia, hielo en llanura norte</td><td>Valles Marineris, con fisión de respaldo</td><td>Cerca del casquete norte, hielo dominante</td></tr>
+          <tr><th scope="row">Plazo (décadas)</th><td>Aprox. 2–4 décadas</td><td>Aprox. 4–7 décadas</td><td>Aprox. 3–6 décadas</td></tr>
+          <tr><th scope="row">Riesgo dominante</th><td>Arrastre, reboost y basura orbital; costo continuo de lanzamientos</td><td>Masa enorme a ensamblar y dependencia de industria lunar previa</td><td>Dinámica del cable y apuesta fisiológica a 0,38 g</td></tr>
+          <tr><th scope="row">Motivo para elegirla</th><td>Empezar pronto con acceso frecuente desde la Tierra</td><td>Agricultura a escala y transporte repetible</td><td>Poca masa estructural y aclimatación al destino</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="gravedad" aria-labelledby="t-grav">
+  <div class="in">
+    <p class="sobre">Herramienta didáctica</p>
+    <h2 id="t-grav">Explorador de gravedad</h2>
+    <p class="lectura intro">Un juguete para entender cómo se relacionan radio, giro y gravedad. No es un simulador certificado.</p>
+    <div class="explorador">
+      <div>
+        <p class="formula" aria-label="Fórmulas">ω = 2π · rpm / 60   [rad/s]<br>a = ω² · R   [m/s²]<br>g_rel = a / 9,80665</p>
+        <div class="campos">
+          <div><label for="in-r">Radio (m)</label><input id="in-r" type="number" inputmode="decimal" step="any" value="224"></div>
+          <div><label for="in-rpm">Giro (rpm)</label><input id="in-rpm" type="number" inputmode="decimal" step="any" value="2"></div>
+        </div>
+        <div class="carga">
+          <button class="btn" type="button" data-carga="a">Cargar diseño A</button>
+          <button class="btn" type="button" data-carga="b">Cargar diseño B</button>
+          <button class="btn" type="button" data-carga="c">Cargar diseño C</button>
+        </div>
+        <p style="margin-top:1rem;color:var(--texto2)"><span class="cap cri">Criterio</span> Las notas de Coriolis son una pauta de estudios de hábitat, no una ley.</p>
+      </div>
+      <div class="salida" id="salida" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="almacen" aria-labelledby="t-alm">
+  <div class="in">
+    <p class="sobre">Qué se guarda y para qué</p>
+    <h2 id="t-alm">El almacén: cuatro familias</h2>
+    <p class="lectura intro">Cada familia resuelve un problema distinto. Todas necesitan un stock de seguridad por si se pierde una ventana de lanzamiento.</p>
+    <div class="rec">
+      <section>
+        <h3>Alimentos</h3>
+        <p class="lectura">Alimentan a estación, Luna y tránsitos.</p>
+        <dl>
+          <dt class="e">En la estación</dt><dd>Complementan los invernaderos mientras la producción propia aún es parcial.</dd>
+          <dt class="l">En la Luna</dt><dd>Cubren las calorías hasta que el invernadero lunar produzca una parte significativa.</dd>
+          <dt class="i">En la intermedia</dt><dd>Reserva para tripulaciones en tránsito y para una ventana perdida.</dd>
+          <dt class="m">En Marte</dt><dd>Respaldo ante fallos de cosecha o tormentas de polvo.</dd>
+        </dl>
+      </section>
+      <section>
+        <h3>Combustible</h3>
+        <p class="lectura">Abre las salidas: sin propergol no hay trayecto.</p>
+        <dl>
+          <dt class="e">En la estación</dt><dd>Reboost y llenado de naves antes de partir.</dd>
+          <dt class="l">En la Luna</dt><dd>Se produce con hielo local; es el primer producto que exporta.</dd>
+          <dt class="i">En la intermedia</dt><dd>Su razón de ser: guardar propergol para el tramo final.</dd>
+          <dt class="m">En Marte</dt><dd>Propergol de retorno o de hoppers, hecho con recursos locales.</dd>
+        </dl>
+      </section>
+      <section>
+        <h3>Materiales de construcción</h3>
+        <p class="lectura">Construyen primero la base lunar y después la marciana.</p>
+        <dl>
+          <dt class="e">En la estación</dt><dd>Kits y estructuras para ampliar o reparar sin esperar un lanzamiento.</dd>
+          <dt class="l">En la Luna</dt><dd>Regolito y metales locales sustituyen poco a poco al envío terrestre.</dd>
+          <dt class="i">En la intermedia</dt><dd>Reserva de piezas pesadas para el tramo hacia Marte.</dd>
+          <dt class="m">En Marte</dt><dd>Primeros módulos traídos, luego ladrillos y piezas locales.</dd>
+        </dl>
+      </section>
+      <section>
+        <h3>Equipos</h3>
+        <p class="lectura">Son el repuesto que no se puede improvisar.</p>
+        <dl>
+          <dt class="e">En la estación</dt><dd>Bombas, filtros y módulos de ECLSS de repuesto.</dd>
+          <dt class="l">En la Luna</dt><dd>Reactores, excavadoras y electrónica que aún no se fabrican allí.</dd>
+          <dt class="i">En la intermedia</dt><dd>Repuestos críticos a medio camino de ambos extremos.</dd>
+          <dt class="m">En Marte</dt><dd>Todo lo que una avería no pueda esperar a la siguiente ventana.</dd>
+        </dl>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="limites" aria-labelledby="t-lim">
+  <div class="in">
+    <p class="sobre">Lo que esta página no demuestra</p>
+    <h2 id="t-lim">Límites</h2>
+    <ul class="lim">
+      <li><strong>Medicina.</strong> No hay evidencia sobre años enteros en gravedad parcial. Los 0,38 g de la propuesta C son una hipótesis de diseño.</li>
+      <li><strong>Presupuesto.</strong> No hay costos, y los plazos en décadas son rangos de escenario.</li>
+      <li><strong>Política.</strong> No hay tratado ni acuerdo entre países, y ninguna agencia ha aprobado este plan.</li>
+      <li><strong>Diseño estructural.</strong> No se calcula resistencia de materiales, dinámica del cable ni blindaje.</li>
+      <li><strong>Protección planetaria.</strong> No se contamina Marte ni se trae material marciano sin un protocolo. En este escenario eso queda como condición abierta, no como trámite resuelto.</li>
+      <li><strong>Autosuficiencia.</strong> «Autosustentable» significa, en régimen maduro, cubrir la mayor parte de aire, agua y calorías, fabricar o reciclar parte de los repuestos y sacar el propergol de recursos locales. Las fases tempranas dependen de la Tierra.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec cierre" aria-labelledby="t-cierre">
+  <div class="in">
+    <h2 id="t-cierre">Cierre</h2>
+    <p>El orden es una estación que ya recibe carga, una Luna que aprende a vivir, un camino con un almacén a mitad y un Marte que puede quedarse.</p>
+    <p>Las tres propuestas compiten entre sí, y esta página no finge que una haya ganado.</p>
+    <p>Lo que importa es el orden de las decisiones: nada de lo anterior es independiente en el primer año.</p>
+  </div>
+</section>
+
+</main>
+
+<footer><div class="in">Escenario teórico de divulgación técnica. Las cifras de gravedad se calculan con la misma fórmula que el explorador.</div></footer>
+
+<script>
+(function(){
+  "use strict";
+  var G0 = 9.80665;
+
+  function calc(r, rpm){
+    var w = 2 * Math.PI * rpm / 60;
+    var a = w * w * r;
+    return {w:w, a:a, g:a / G0};
+  }
+  function fmt(n, d){
+    return n.toLocaleString("es-ES", {minimumFractionDigits:d, maximumFractionDigits:d});
+  }
+
+  var DISENOS = {a:{r:224, rpm:2.0}, b:{r:895, rpm:1.0}, c:{r:340, rpm:1.0}};
+
+  /* g de fichas y tabla */
+  document.querySelectorAll(".gcalc").forEach(function(el){
+    var r = parseFloat(el.getAttribute("data-r"));
+    var rpm = parseFloat(el.getAttribute("data-rpm"));
+    var c = calc(r, rpm);
+    if(el.getAttribute("data-par")){
+      el.textContent = r + " m a " + fmt(rpm,1) + " rpm · " + fmt(c.g,2) + " g";
+    } else {
+      el.textContent = fmt(c.g,2) + " g";
+    }
+  });
+
+  /* menú */
+  var btnMenu = document.getElementById("btn-menu");
+  var menu = document.getElementById("menu");
+  btnMenu.addEventListener("click", function(){
+    var abierto = menu.classList.toggle("abierto");
+    btnMenu.setAttribute("aria-expanded", abierto ? "true" : "false");
+  });
+  menu.addEventListener("click", function(e){
+    if(e.target.tagName === "A"){
+      menu.classList.remove("abierto");
+      btnMenu.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  /* fases */
+  var FASES = [
+    {t:"Marco",
+     o:"Fijar qué se quiere decidir: el orden de una cadena Tierra–Luna–intermedia–Marte y su comparación en tres propuestas.",
+     d:"Qué queda fuera: no es un programa nacional ni un presupuesto. Se eligen criterios de éxito del escenario: gravedad por rotación, dos naves a la vez, cadena completa y régimen maduro autosustentable.",
+     tr:"Definir alcance, capas de afirmación (física, criterio, escenario) y la lista de preguntas abiertas.",
+     dep:"Ninguna: es el punto de partida.",
+     l:"Cada afirmación posterior puede etiquetarse con una capa y compararse entre propuestas.",
+     r:"Mezclar un escenario con un compromiso: si las hipótesis se leen como promesas, la comparación pierde sentido."},
+    {t:"Órbita y forma",
+     o:"Decidir dónde vive la estación y cómo produce gravedad.",
+     d:"Órbita, forma del hábitat, radio y rpm. La gravedad es centrípeta: a = ω²·R. El puerto no gira con el hábitat porque una nave no puede atracar en un anillo que gira; va en un nodo desacoplado (hub despun).",
+     tr:"Elegir la pareja radio/rpm, comprobar que cumple la fórmula y que se mantiene en la pauta de ≤2 rpm.",
+     dep:"Fase 1.",
+     l:"Existe un par radio/rpm con g calculado y una órbita justificada.",
+     r:"Un giro demasiado rápido: por encima de unos 4 rpm el Coriolis es fuerte para la mayoría de las personas."},
+    {t:"Energía y calor",
+     o:"Asegurar electricidad y rechazo de calor para toda la estación.",
+     d:"Fuente (solar en las tres), almacenamiento para eclipses, radiadores. Sin energía sobrada no hay invernadero ni depósito criogénico.",
+     tr:"Dimensionar de forma conceptual campos solares y radiadores, y separar paneles del giro.",
+     dep:"Fase 2.",
+     l:"Hay un balance de energía y calor que sostiene al menos el hub, el soporte vital y el almacén frío.",
+     r:"El calor residual no sale: los depósitos criogénicos se evaporan y el hábitat se sobrecalienta."},
+    {t:"Estructura que gira",
+     o:"Ordenar la construcción: primero hub y puertos, luego el radio habitable.",
+     d:"En microgravedad ya se puede recibir carga. Un puerto de carga que espera a la ciudad terminada no cumple el encargo.",
+     tr:"Secuenciar hub, puertos y primeros depósitos; después anillo, cilindro o cable y hábitats.",
+     dep:"Fases 2 y 3.",
+     l:"El hub recibe naves y almacena carga antes de que el radio habitable esté completo.",
+     r:"Que la parte que gira se retrase y el hub funcione sin tripulación estable, con carga acumulándose sin quien la maneje."},
+    {t:"Aire, agua y comida",
+     o:"Montar un soporte vital (ECLSS) en capas.",
+     d:"Reciclaje de aire y agua, invernaderos, tratamiento de residuos como recurso. Se fija una meta de calorías por fase, sin prometer el 100 % el primer año.",
+     tr:"Capas: almacenamiento, reciclaje, producción vegetal, cierre parcial; medir y ajustar.",
+     dep:"Fase 3 (energía) y, para el invernadero, la parte habitable de la fase 4.",
+     l:"El hábitat cubre una fracción verificable de aire, agua y calorías, y los residuos vuelven al ciclo.",
+     r:"Una avería en el reciclaje de agua con poco stock de respaldo detiene a la tripulación antes de poder reponer."},
+    {t:"Dos puertos y carga",
+     o:"Operar a la vez dos naves en el hub.",
+     d:"Atraque simultáneo, esclusa de tripulación separada de la de carga, grúa o carril de contenedores en el hub y zona de propergol alejada de la esclusa de tripulación.",
+     tr:"Definir flujos de tripulación y carga, y qué hace cada puerto si el otro falla.",
+     dep:"Fase 4.",
+     l:"Dos naves pueden estar atracadas y operar sin interferirse; si un puerto sale de servicio, el otro mantiene el puerto vivo.",
+     r:"Que una fuga o incendio en la zona de propergol alcance a la esclusa de tripulación."},
+    {t:"Almacén",
+     o:"Guardar cuatro familias de recursos con una función distinta cada una.",
+     d:"Alimentos para estación, Luna y tránsitos; combustible para abrir salidas; materiales para construir; equipos como repuesto que no se puede improvisar. Se añade un stock de seguridad por si se pierde una ventana de lanzamiento.",
+     tr:"Dimensionar módulos, rotación de caducidades y control de temperatura.",
+     dep:"Fases 3 y 6.",
+     l:"Hay un inventario por familia y un stock de seguridad definido para al menos una ventana perdida.",
+     r:"Que un único fallo de frío o de inventario eche a perder toda una familia a la vez."},
+    {t:"Salto a la Luna",
+     o:"Usar la estación como astillero y depósito para llegar a la Luna.",
+     d:"Se acumula, se prueba el hábitat lunar en el puerto y se envía en una ventana. La base lunar no nace autosuficiente: hereda el almacén terrestre.",
+     tr:"Ensamblar y probar módulos, cargarlos y despacharlos en la ventana de transferencia lunar.",
+     dep:"Fases 5, 6 y 7.",
+     l:"Un módulo lunar probado parte desde la estación con carga suficiente para sostenerse sin reposición inmediata.",
+     r:"Probar mal un módulo en la estación y descubrir el fallo recién tras llegar a la Luna."},
+    {t:"Base lunar sustentable",
+     o:"Lograr una base que pase una noche lunar o un fallo de reabastecimiento sin evacuar.",
+     d:"Energía local, hielo, oxígeno, un invernadero, protección (regolito o tubo de lava) y una línea de vuelta de productos hacia la estación. Exporta más masa útil de la que importa en régimen maduro, que llega después de una etapa dependiente.",
+     tr:"Instalar energía y almacenamiento, extraer y refinar hielo, cultivar, exportar oxígeno o propergol.",
+     dep:"Fase 8.",
+     l:"La base resiste una noche lunar con sus propios medios y exporta algo útil de forma regular.",
+     r:"La noche lunar (unas dos semanas de oscuridad) deja sin energía si el almacenamiento no basta."},
+    {t:"Base intermedia",
+     o:"Mantener la cadena cuando la geometría Tierra-Marte es mala.",
+     d:"Su trabajo no es ser otra ciudad: guarda propergol y repuestos y ofrece refugio. Ubicación según la propuesta.",
+     tr:"Colocar el depósito o el ciclador, abastecerlo desde la Luna o la estación y definir quién lo visita.",
+     dep:"Fases 8 y 9.",
+     l:"El nodo almacena propergol y repuestos de forma estable y recibe visitas programadas.",
+     r:"Perder la ventana de encuentro con el nodo: según la propuesta, la espera puede ser de meses o de un par de años."},
+    {t:"Marte autosustentable",
+     o:"Lograr que Marte produzca lo esencial para permanecer aunque falle una ventana de suministro.",
+     d:"Energía que sobreviva a las tormentas de polvo, agua local, aire y comida de invernadero, propergol de retorno o de hoppers y un almacén que la intermedia rellena en cada ventana. El primer descenso no es independiente.",
+     tr:"Instalar energía (con respaldo), extraer agua, montar invernaderos y producir propergol.",
+     dep:"Fase 10.",
+     l:"La base pasa una ventana de suministro perdida con sus propios recursos y mantiene la tripulación sana.",
+     r:"Una tormenta de polvo global prolongada que reduce la energía solar mientras el respaldo aún no basta."}
+  ];
+
+  var APLICA = {
+    a:[
+      "<b>Marco.</b> Prioridad al acceso rápido y a la reposición frecuente.",
+      "<b>Órbita y forma.</b> LEO a unos 450 km; toro rígido de 224 m a 2,0 rpm.",
+      "<b>Energía.</b> Paneles aislados del giro y baterías para eclipses frecuentes.",
+      "<b>Estructura.</b> Hub y puertos primero, el anillo después, por módulos lanzados por separado.",
+      "<b>Aire, agua y comida.</b> Invernaderos en el anillo; comida parcial al principio.",
+      "<b>Puertos.</b> Dos en el hub; esclusas de tripulación y de carga separadas.",
+      "<b>Almacén.</b> Módulos de depósito junto al hub, fuera de la zona que gira.",
+      "<b>Luna.</b> Salto desde LEO hacia el polo sur.",
+      "<b>Base lunar.</b> Hielo del polo sur (Shackleton como ejemplo) para agua, oxígeno y metano.",
+      "<b>Intermedia.</b> Depósito en Tierra-Luna L2, lado lejano de la Luna.",
+      "<b>Marte.</b> Arcadia Planitia, con hielo y producción de metano y oxígeno locales."
+    ],
+    b:[
+      "<b>Marco.</b> Prioridad a la agricultura real y al transporte repetible.",
+      "<b>Órbita y forma.</b> Tierra-Luna L5; cilindro de 895 m a 1,0 rpm.",
+      "<b>Energía.</b> Campos solares fuera del cilindro; sin el eclipse de 90 minutos de LEO.",
+      "<b>Estructura.</b> Muelles de las tapas primero, el cilindro después; obra mucho mayor.",
+      "<b>Aire, agua y comida.</b> El interior es suelo e invernadero; la ciudad guarda cosechas.",
+      "<b>Puertos.</b> Dos en los ejes de las tapas, en microgravedad.",
+      "<b>Almacén.</b> La propia ciudad, con propergol traído de la Luna.",
+      "<b>Luna.</b> Industria lunar que debe existir antes de que el ciclador valga la pena.",
+      "<b>Base lunar.</b> Tubo de lava (colinas Marius) que exporta oxígeno, metales y áridos a L5.",
+      "<b>Intermedia.</b> Ciclador de Aldrin con taxis; perder el taxi significa esperar unos dos años.",
+      "<b>Marte.</b> Valles Marineris, con fisión como respaldo ante el polvo global."
+    ],
+    c:[
+      "<b>Marco.</b> Prioridad a mover carga con poca masa estructural.",
+      "<b>Órbita y forma.</b> Órbita terrestre alta; dos hábitats con cable, 340 m a 1,0 rpm, 0,38 g.",
+      "<b>Energía.</b> Solar en el hub y propulsión eléctrica solar para los cargueros.",
+      "<b>Estructura.</b> Hub primero, después hábitats y cable; hay que vigilar la vibración.",
+      "<b>Aire, agua y comida.</b> Cultivos ya a 0,38 g, la gravedad que tendrán en Marte.",
+      "<b>Puertos.</b> Dos en el hub del centro de masa, sin giro útil para la tripulación.",
+      "<b>Almacén.</b> Puerto de contenedores estándar, intercambiables entre todos los nodos.",
+      "<b>Luna.</b> La Luna fabrica; la estación ensambla poco.",
+      "<b>Base lunar.</b> Polo sur como mina y fábrica de oxígeno, metales y piezas sinterizadas.",
+      "<b>Intermedia.</b> Depósito heliocéntrico a unas 1,3 UA, repuesto por cargueros eléctricos lentos.",
+      "<b>Marte.</b> Cerca del casquete norte, con reactores y huertos; Fobos solo como puerto opcional."
+    ]
+  };
+
+  var ROT = ["Objetivo","Decisiones","Trabajos","Dependencia","Criterio de listo","Riesgo principal"];
+  var lista = document.getElementById("fases");
+  FASES.forEach(function(f, i){
+    var n = i + 1;
+    var li = document.createElement("li");
+    li.className = "fase";
+    li.id = "fase-" + n;
+    var abierto = (n === 1);
+    li.innerHTML =
+      '<div class="fnum" aria-hidden="true">' + (n < 10 ? "0" + n : n) + '</div>' +
+      '<div class="fcont">' +
+        '<h3 style="margin:0"><button class="fh" type="button" id="fh-' + n + '" aria-expanded="' + abierto + '" aria-controls="fp-' + n + '"><span>' + f.t + '</span><span class="ind">' + (abierto ? "Cerrar" : "Abrir") + '</span></button></h3>' +
+        '<div class="fpanel" id="fp-' + n + '" role="region" aria-labelledby="fh-' + n + '"' + (abierto ? "" : " hidden") + '>' +
+          '<dl>' +
+            '<dt>' + ROT[0] + '</dt><dd>' + f.o + '</dd>' +
+            '<dt>' + ROT[1] + '</dt><dd>' + f.d + '</dd>' +
+            '<dt>' + ROT[2] + '</dt><dd>' + f.tr + '</dd>' +
+            '<dt>' + ROT[3] + '</dt><dd>' + f.dep + '</dd>' +
+            '<dt>' + ROT[4] + '</dt><dd>' + f.l + '</dd>' +
+            '<dt>' + ROT[5] + '</dt><dd>' + f.r + '</dd>' +
+          '</dl>' +
+        '</div>' +
+      '</div>';
+    lista.appendChild(li);
+  });
+  function setFase(n, abrir){
+    var b = document.getElementById("fh-" + n);
+    var p = document.getElementById("fp-" + n);
+    if(!b || !p) return;
+    b.setAttribute("aria-expanded", abrir ? "true" : "false");
+    p.hidden = !abrir;
+    b.querySelector(".ind").textContent = abrir ? "Cerrar" : "Abrir";
+  }
+  lista.addEventListener("click", function(e){
+    var b = e.target.closest("button.fh");
+    if(!b) return;
+    var n = b.id.replace("fh-", "");
+    setFase(n, b.getAttribute("aria-expanded") !== "true");
+  });
+
+  /* cómo se aplica */
+  document.querySelectorAll("[data-apply]").forEach(function(ol){
+    var k = ol.getAttribute("data-apply");
+    ol.innerHTML = APLICA[k].map(function(t){ return "<li>" + t + "</li>"; }).join("");
+  });
+
+  /* propuestas */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll("[role=tab]"));
+  var ORDEN = ["a","b","c"];
+  var ETIQ = {
+    a:{t:"Origen de la carga", e:"Toro en LEO", l:"Polo sur", i:"Depósito en L2", m:"Arcadia Planitia"},
+    b:{t:"Origen de la carga", e:"Cilindro en L5", l:"Tubo de lava", i:"Ciclador de Aldrin", m:"Valles Marineris"},
+    c:{t:"Origen de la carga", e:"Cable en órbita alta", l:"Mina y fábrica", i:"Depósito a 1,3 UA", m:"Casquete norte"}
+  };
+  var ACT = "a";
+  function elegir(k, foco, hash){
+    ACT = k;
+    tabs.forEach(function(t){
+      var on = (t.getAttribute("data-p") === k);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      var panel = document.getElementById(t.getAttribute("aria-controls"));
+      panel.hidden = !on;
+      if(on && foco) t.focus();
+    });
+    var e = ETIQ[k];
+    document.getElementById("d-t").textContent = e.t;
+    document.getElementById("d-e").textContent = e.e;
+    document.getElementById("d-l").textContent = e.l;
+    document.getElementById("d-i").textContent = e.i;
+    document.getElementById("d-m").textContent = e.m;
+    document.getElementById("estado-diag").textContent = "Etiquetas según la propuesta " + k.toUpperCase() + ".";
+    if(hash && location.hash !== "#propuesta-" + k){
+      history.replaceState(null, "", "#propuesta-" + k);
+    }
+  }
+  tabs.forEach(function(t){
+    t.addEventListener("click", function(){ elegir(t.getAttribute("data-p"), false, true); });
+    t.addEventListener("keydown", function(ev){
+      var i = ORDEN.indexOf(t.getAttribute("data-p"));
+      if(ev.key === "ArrowRight"){ ev.preventDefault(); elegir(ORDEN[(i + 1) % 3], true, true); }
+      else if(ev.key === "ArrowLeft"){ ev.preventDefault(); elegir(ORDEN[(i + 2) % 3], true, true); }
+      else if(ev.key === "Home"){ ev.preventDefault(); elegir("a", true, true); }
+      else if(ev.key === "End"){ ev.preventDefault(); elegir("c", true, true); }
+    });
+  });
+
+  function porHash(inicial){
+    var h = location.hash.replace("#", "");
+    var m = /^propuesta-([abc])$/.exec(h);
+    if(m){
+      elegir(m[1], false, false);
+      var s = document.getElementById("propuestas");
+      if(s) s.scrollIntoView();
+      return;
+    }
+    var f = /^fase-(\d+)$/.exec(h);
+    if(f){
+      setFase(f[1], true);
+      var el = document.getElementById(h);
+      if(el) el.scrollIntoView();
+    }
+  }
+  window.addEventListener("hashchange", function(){ porHash(false); });
+
+  /* explorador */
+  var inR = document.getElementById("in-r");
+  var inRpm = document.getElementById("in-rpm");
+  var salida = document.getElementById("salida");
+  function esc(s){ return s; }
+  function explorar(){
+    var rs = inR.value.trim(), ps = inRpm.value.trim();
+    var r = Number(rs), p = Number(ps);
+    var msg = null;
+    if(rs === "" || ps === "" || !isFinite(r) || !isFinite(p)) msg = "Escribe un radio y un giro numéricos.";
+    else if(r <= 0) msg = "El radio debe ser mayor que 0 m.";
+    else if(p <= 0) msg = "El giro debe ser mayor que 0 rpm.";
+    else if(p > 20) msg = "Más de 20 rpm queda fuera del rango del juguete (no es habitable).";
+    else if(r > 5000) msg = "Más de 5000 m queda fuera del rango del juguete.";
+    if(msg){
+      salida.innerHTML = '<p class="aviso"><strong>Valor fuera de rango.</strong> ' + msg + '</p>';
+      return;
+    }
+    var c = calc(r, p);
+    var nota, capa = "Criterio";
+    if(p <= 2) nota = "Hasta 2 rpm es la zona que se suele buscar para estancias largas.";
+    else if(p <= 4) nota = "Entre 2 y 4 rpm el Coriolis se nota al mover la cabeza y al caminar; hace falta adaptación.";
+    else nota = "Por encima de unos 4 rpm el efecto es fuerte para la mayoría de las personas.";
+    salida.innerHTML =
+      '<p class="gran">' + fmt(c.g, 2) + ' g</p>' +
+      '<p><span class="cap fis">Física</span> Aceleración: ' + fmt(c.a, 2) + ' m/s² · ω = ' + fmt(c.w, 4) + ' rad/s</p>' +
+      '<p><span class="cap cri">' + capa + '</span> ' + nota + ' Es una pauta, no una ley.</p>';
+  }
+  inR.addEventListener("input", explorar);
+  inRpm.addEventListener("input", explorar);
+  document.querySelectorAll("[data-carga]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var d = DISENOS[b.getAttribute("data-carga")];
+      inR.value = d.r;
+      inRpm.value = d.rpm;
+      explorar();
+    });
+  });
+  explorar();
+
+  /* sección activa en el menú */
+  var enlaces = Array.prototype.slice.call(menu.querySelectorAll("a"));
+  if("IntersectionObserver" in window){
+    var obs = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if(en.isIntersecting){
+          enlaces.forEach(function(a){
+            if(a.getAttribute("href") === "#" + en.target.id) a.classList.add("act");
+            else a.classList.remove("act");
+          });
+        }
+      });
+    }, {rootMargin:"-40% 0px -55% 0px"});
+    enlaces.forEach(function(a){
+      var s = document.querySelector(a.getAttribute("href"));
+      if(s) obs.observe(s);
+    });
+  }
+
+  elegir("a", false, false);
+  porHash(true);
+})();
+</script>
+</body>
+</html>
